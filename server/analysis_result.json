@@ -1,0 +1,101 @@
+{
+  "scene_analysis": {
+    "scene_type": "unknown",
+    "confidence": 0.0,
+    "places365_predictions": [
+      {
+        "scene": "pharmacy",
+        "confidence": 0.3516494035720825
+      },
+      {
+        "scene": "drugstore",
+        "confidence": 0.33351650834083557
+      },
+      {
+        "scene": "supermarket",
+        "confidence": 0.09607821702957153
+      },
+      {
+        "scene": "department_store",
+        "confidence": 0.07943370193243027
+      },
+      {
+        "scene": "pet_shop",
+        "confidence": 0.023483647033572197
+      }
+    ],
+    "suggested_regions": []
+  },
+  "raw_detections": [
+    {
+      "class_name": "person",
+      "confidence": 0.8943840861320496,
+      "bbox": [
+        228,
+        170,
+        304,
+        322
+      ],
+      "center": [
+        266,
+        246
+      ]
+    },
+    {
+      "class_name": "handbag",
+      "confidence": 0.4893836975097656,
+      "bbox": [
+        268,
+        205,
+        294,
+        245
+      ],
+      "center": [
+        281,
+        225
+      ]
+    },
+    {
+      "class_name": "potted plant",
+      "confidence": 0.3561958074569702,
+      "bbox": [
+        39,
+        175,
+        190,
+        298
+      ],
+      "center": [
+        115,
+        236
+      ]
+    },
+    {
+      "class_name": "handbag",
+      "confidence": 0.31113025546073914,
+      "bbox": [
+        276,
+        259,
+        299,
+        280
+      ],
+      "center": [
+        287,
+        269
+      ]
+    },
+    {
+      "class_name": "person",
+      "confidence": 0.31075891852378845,
+      "bbox": [
+        275,
+        171,
+        292,
+        194
+      ],
+      "center": [
+        283,
+        182
+      ]
+    }
+  ]
+}
