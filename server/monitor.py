@@ -351,6 +351,9 @@ class MonitoringStandardRecommender:
         top_scene = place365_results[0]["scene"]
         detected_objects = [det["object"] for det in yolo_detections]
         
+        # Initialize standard_id counter
+        current_id = 1
+        
         # Check what we have in the scene
         # people_detected = "person" in detected_objects
         # vehicles_detected = any(obj in detected_objects for obj in ["car", "truck", "bus", "motorcycle"])
@@ -358,40 +361,43 @@ class MonitoringStandardRecommender:
         if scene_type == "indoor":
             # Rule: Journey for customer tracking at entrance/exit
             recommendations.append(MonitoringStandard(
-                standard_id=1,
+                standard_id=current_id,
                 shape="line",
                 features=["reid-journey", "people-occupancy"],
                 coordinates=[(0.1, 0.5), (0.9, 0.5)],  # Horizontal line across entrance
                 confidence=0.85,
                 reasoning=f"Indoor {top_scene} - track journey at entrance/exit"
             ))
+            current_id += 1
 
             # Rule: Staff tracking (mutually exclusive with Journey per R4)
             recommendations.append(MonitoringStandard(
-                standard_id=2,
+                standard_id=current_id,
                 shape="polygon",
                 features=["reid-staff"],
                 coordinates=[(0.1, 0.2), (0.9, 0.2), (0.9, 0.8), (0.1, 0.8)],
                 confidence=0.88,
                 reasoning="Office environment - track staff presence and movement"
             ))
+            current_id += 1
                 
             # Rule: People occupancy for density monitoring
             recommendations.append(MonitoringStandard(
-                standard_id=3,
+                standard_id=current_id,
                 shape="polygon",
                 features=["people-occupancy", "standardCount", "objects", "objectsWithDwell"],
                 coordinates=[(0.2, 0.4), (0.6, 0.4), (0.6, 0.7), (0.2, 0.7)],
                 confidence=0.82,
                 reasoning=f"Monitor customer density in {top_scene} area"
             ))
-        
+            current_id += 1
+    
         else:  # outdoor
             if top_scene in self.car_park_scenes:
                 # Car park specific recommendations (following R1 - LPR features)
                 # Rule: Infringement detection for parking violations
                 recommendations.append(MonitoringStandard(
-                    standard_id=1,
+                    standard_id=current_id,
                     shape="polygon",
                     features=["infringement"],
                     coordinates=[(0.5, 0.1), (0.7, 0.1), (0.7, 0.3), (0.5, 0.3)],
@@ -399,26 +405,29 @@ class MonitoringStandardRecommender:
                     reasoning="Car park detected - monitor parking violations",
                     note="Will integrate with parking space detection when model is ready"
                 ))
+                current_id += 1
                 
             # Rule: LPR occupancy for vehicle tracking
             recommendations.append(MonitoringStandard(
-                standard_id=2,
+                standard_id=current_id,
                 shape="polygon", 
                 features=["lpr-occupancy", "LPR_DETECT", "blacklist"],
                 coordinates=[(0.05, 0.35), (0.95, 0.35), (0.95, 0.8), (0.05, 0.8)],
                 confidence=0.89,
                 reasoning="Track vehicle occupancy in parking areas"
             ))
+            current_id += 1
 
             # Rule: count/detect
             recommendations.append(MonitoringStandard(
-                standard_id=3,
+                standard_id=current_id,
                 shape="polygon",
                 features=["people-occupancy", "standardCount", "objects", "objectsWithDwell"],
                 coordinates=[(0.2, 0.3), (0.8, 0.3), (0.8, 0.7), (0.2, 0.7)],
                 confidence=0.82,
                 reasoning=f"Monitor customer density in {top_scene} area"
             ))
+            current_id += 1
             
         # TODO: Validate recommendations against our rules
         # recommendations = self.validate_recommendations(recommendations)
