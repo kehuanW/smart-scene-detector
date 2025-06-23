@@ -1,7 +1,6 @@
-#!/usr/bin/env python3
 """
 Enhanced Computer Vision Monitoring System
-Integrates existing SceneDetector with monitoring standard recommendations
+Main monitoring system class and recommendation logic
 """
 
 import os
@@ -17,37 +16,13 @@ import torchvision.transforms as transforms
 from PIL import Image
 import urllib.request
 from torch.nn import functional as F
-import matplotlib.pyplot as plt
-import matplotlib.patches as patches
-from dataclasses import dataclass
 from typing import List, Tuple, Dict, Any
-import glob
+
+from data_models import MonitoringStandard, MonitoringResult
+from visualization import visualize_results
 from categories.places365_indoor_scenes import INDOOR_SCENES
 from categories.places365_outdoor_scenes import OUTDOOR_SCENES
 from categories.places365_parking_scenes import PARKING_SCENES
-
-@dataclass
-class MonitoringStandard:
-    """Structure to hold monitoring standard information"""
-    standard_id: int
-    # type: str # "reid", "analytics", "lpr"
-    shape: str  # 'polygon' or 'line'
-    features: List[str]
-    coordinates: List[Tuple[float, float]]  # Normalized coordinates (0-1)
-    confidence: float
-    reasoning: str
-    note: str = ""
-
-@dataclass
-class MonitoringResult:
-    """Complete monitoring analysis result"""
-    image_path: str
-    timestamp: str
-    place365_results: List[Dict]
-    yolo_detections: List[Dict]
-    scene_type: str
-    parking_detection: Dict = None
-    recommendations: List[MonitoringStandard] = None
 
 class MonitoringStandardRecommender:
     def __init__(self, model_path: str = 'yolov8n.pt', use_places365: bool = True):
@@ -236,7 +211,7 @@ class MonitoringStandardRecommender:
             return []
 
     def classify_indoor_outdoor(self, place365_results):
-        # Same implementation as before
+        """Classify scene as indoor or outdoor"""
         top_scene = place365_results[0]["scene"]
         
         if '/indoor' in top_scene or top_scene.endswith('/indoor'):
@@ -354,10 +329,6 @@ class MonitoringStandardRecommender:
         # Initialize standard_id counter
         current_id = 1
         
-        # Check what we have in the scene
-        # people_detected = "person" in detected_objects
-        # vehicles_detected = any(obj in detected_objects for obj in ["car", "truck", "bus", "motorcycle"])
-        
         if scene_type == "indoor":
             # Rule: Journey for customer tracking at entrance/exit
             recommendations.append(MonitoringStandard(
@@ -411,7 +382,7 @@ class MonitoringStandardRecommender:
             recommendations.append(MonitoringStandard(
                 standard_id=current_id,
                 shape="polygon", 
-                features=["lpr-occupancy", "LPR_DETECT", "blacklist"],
+                features=["lpr-occupancy", "ANPR_DETECT", "blacklist"],
                 coordinates=[(0.05, 0.35), (0.95, 0.35), (0.95, 0.8), (0.05, 0.8)],
                 confidence=0.89,
                 reasoning="Track vehicle occupancy in parking areas"
@@ -487,7 +458,8 @@ class MonitoringStandardRecommender:
                 "coordinates": rec.coordinates,
                 "confidence": rec.confidence,
                 "reasoning": rec.reasoning,
-                "note": rec.note
+                "note": rec.note,
+                "features_config": rec.features_config
             })
         
         # Compile results
@@ -503,92 +475,15 @@ class MonitoringStandardRecommender:
         
         return result
 
-    def visualize_results(self, image_path, result, save_path):
-        """Visualize the monitoring recommendations on the image"""
-        try:
-            # Load image
-            image = cv2.imread(image_path)
-            if image is None:
-                print(f"Could not load image: {image_path}")
-                return
-                
-            image_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-            height, width = image_rgb.shape[:2]
-            
-            fig, ax = plt.subplots(1, 1, figsize=(14, 10))
-            ax.imshow(image_rgb)
-            
-            # Draw monitoring standards
-            colors = ['red', 'green', 'orange', 'purple', 'yellow', 'cyan', 'magenta']
-            
-            for i, rec in enumerate(result.recommendations):
-                color = colors[i % len(colors)]
-                
-                if rec["shape"] == "polygon":
-                    # Convert normalized coordinates back to pixel coordinates
-                    pixel_coords = [(x * width, y * height) for x, y in rec["coordinates"]]
-                    polygon = patches.Polygon(pixel_coords, 
-                                            linewidth=3, edgecolor=color, 
-                                            facecolor=color, alpha=0.2)
-                    ax.add_patch(polygon)
-                    
-                    # Find left upper corner of polygon
-                    min_x = min([p[0] for p in pixel_coords])
-                    min_y = min([p[1] for p in pixel_coords])
-                    
-                    features_text = "+".join(rec["features"])
-                    ax.text(min_x + 5, min_y + 15, f"S{rec['standard_id']}: {features_text}", 
-                        color=color, fontsize=9, weight='bold', 
-                        ha='left', va='top',
-                        bbox=dict(boxstyle="round,pad=0.3", facecolor='white', alpha=0.9))
-                
-                elif rec["shape"] == "line":
-                    # Convert normalized coordinates back to pixel coordinates
-                    pixel_coords = [(x * width, y * height) for x, y in rec["coordinates"]]
-                    x_coords = [p[0] for p in pixel_coords]
-                    y_coords = [p[1] for p in pixel_coords]
-                    ax.plot(x_coords, y_coords, color=color, linewidth=4, alpha=0.8)
-                    
-                    # Find left upper corner of line
-                    min_x = min(x_coords)
-                    min_y = min(y_coords)
-                    
-                    features_text = "+".join(rec["features"])
-                    ax.text(min_x + 5, min_y - 5, f"S{rec['standard_id']}: {features_text}", 
-                        color=color, fontsize=9, weight='bold', 
-                        ha='left', va='bottom',
-                        bbox=dict(boxstyle="round,pad=0.3", facecolor='white', alpha=0.9))
-            
-            # Add title with scene information
-            title = f"Monitoring Standards: {result.scene_type}"
-            if result.place365_results:
-                title += f"\nTop Scene: {result.place365_results[0]['scene']} ({result.place365_results[0]['confidence']:.2f})"
-            title += f"\nObjects: {', '.join([d['object'] for d in result.yolo_detections])}"
-            
-            ax.set_title(title, fontsize=12, weight='bold')
-            ax.axis('off')
-            
-            plt.tight_layout()
-            plt.savefig(save_path, dpi=300, bbox_inches='tight')
-            plt.close()
-            
-            print(f"✓ Visualization saved: {save_path}")
-            
-        except Exception as e:
-            print(f"Error in visualization: {e}")
-
     def process_folder(self, input_folder="images", output_folder="results"):
         """Process all images in input folder and save results"""
+        from utils import get_image_files
+        
         # Create output folder if it doesn't exist
         Path(output_folder).mkdir(parents=True, exist_ok=True)
         
         # Get all image files
-        image_extensions = ['*.jpg', '*.jpeg', '*.png', '*.bmp', '*.tiff', '*.webp']
-        image_files = []
-        
-        for ext in image_extensions:
-            image_files.extend(Path(input_folder).glob(ext))
-            image_files.extend(Path(input_folder).glob(ext.upper()))
+        image_files = get_image_files(input_folder)
         
         if not image_files:
             print(f"❌ No images found in {input_folder}")
@@ -601,7 +496,7 @@ class MonitoringStandardRecommender:
         for i, image_path in enumerate(image_files, 1):
             try:
                 print(f"\n{'='*60}")
-                print(f"Processing {i}/{len(image_files)}: {image_path.name}")
+                print(f"Processing {i}/{len(image_files)}: {os.path.basename(image_path)}")
                 print(f"{'='*60}")
                 
                 result = self.process_image(str(image_path))
@@ -613,7 +508,7 @@ class MonitoringStandardRecommender:
                 print(f"Standards: {len(result.recommendations)}")
                 
                 # Generate output filenames
-                base_name = image_path.stem
+                base_name = Path(image_path).stem
                 json_output = Path(output_folder) / f"{base_name}_monitoring.json"
                 viz_output = Path(output_folder) / f"{base_name}_visualization.png"
                 
@@ -635,12 +530,12 @@ class MonitoringStandardRecommender:
                     json.dump(result_dict, f, indent=2)
                 
                 # Create visualization
-                self.visualize_results(str(image_path), result, str(viz_output))
+                visualize_results(str(image_path), result, str(viz_output))
                 
                 print(f"✓ Saved: {json_output.name}, {viz_output.name}")
                 
             except Exception as e:
-                print(f"✗ Error processing {image_path.name}: {str(e)}")
+                print(f"✗ Error processing {os.path.basename(image_path)}: {str(e)}")
                 import traceback
                 traceback.print_exc()
                 continue
@@ -670,52 +565,3 @@ class MonitoringStandardRecommender:
         print(f"✓ Processed: {len(all_results)}/{len(image_files)} images")
         print(f"✓ Results saved in: {output_folder}")
         print(f"✓ Summary: {summary_path.name}")
-
-def get_image_files(folder_path):
-    """Get all image files from a folder"""
-    image_extensions = ['*.jpg', '*.jpeg', '*.png', '*.bmp', '*.tiff', '*.webp']
-    image_files = []
-    
-    for extension in image_extensions:
-        image_files.extend(glob.glob(os.path.join(folder_path, extension)))
-        image_files.extend(glob.glob(os.path.join(folder_path, extension.upper())))
-    
-    return sorted(image_files)
-
-def main():
-    """Main function to run the monitoring system"""
-    print("🚀 Computer Vision Monitoring System")
-    print("=" * 50)
-    
-    try:
-        # Configuration
-        images_folder = "images"
-        output_folder = "results"
-        
-        # You can specify your custom YOLO model path here
-        # model_path = '/aria/personal/ParkingResults/saved_models/weights/best.pt'
-        model_path = 'yolov8n.pt'  # Default model
-        
-        # Initialize the system
-        recommender = MonitoringStandardRecommender(
-            model_path=model_path,
-            use_places365=True
-        )
-        
-        # Process all images
-        recommender.process_folder(
-            input_folder=images_folder,
-            output_folder=output_folder
-        )
-        
-        
-    except Exception as e:
-        print(f"❌ Error: {e}")
-        print("\n📋 Setup Requirements:")
-        print("1. Install: pip install ultralytics opencv-python torch torchvision pillow matplotlib")
-        print("2. Create 'images' folder and add your images")
-        print("3. Update model_path if using custom YOLO model")
-        print("4. Run the script again")
-
-if __name__ == "__main__":
-    main()

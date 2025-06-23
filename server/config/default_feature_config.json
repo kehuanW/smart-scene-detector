@@ -1,0 +1,258 @@
+{
+  "COUNT": {
+    "config_on": true,
+    "features": {
+      "standardCount": {
+        "alert": {
+          "EMAIL": false,
+          "EMAIL-RECEIVERS": [],
+          "NX": true,
+          "NX-BOOKMARK": false,
+          "NX-PLUGIN": true,
+          "POST": false,
+          "POST-BODY": [],
+          "POST-CONTENT-TYPE": "",
+          "POST-ROOT-ELEMENT": "",
+          "POST-URL": "",
+          "silencePeriodInMinutes": 0
+        },
+        "config_on": true,
+        "objects": [
+          {
+            "objName": "person"
+          },
+          {
+            "objName": "dog"
+          },
+          {
+            "objName": "car"
+          },
+          {
+            "objName": "bicycle"
+          },
+          {
+            "objName": "horse"
+          }
+        ]
+      },
+      "objectsWithDwell": {
+        "alert": {
+          "EMAIL": false,
+          "EMAIL-RECEIVERS": [],
+          "NX": true,
+          "NX-BOOKMARK": false,
+          "NX-PLUGIN": true,
+          "POST": false,
+          "POST-BODY": [],
+          "POST-CONTENT-TYPE": "",
+          "POST-ROOT-ELEMENT": "",
+          "POST-URL": "",
+          "silencePeriodInMinutes": 0
+        },
+        "config_on": true,
+        "rules": [
+          {
+            "dwell": {
+              "h": 0,
+              "m": 1,
+              "s": 0
+            },
+            "id": 1,
+            "objName": "person",
+            "ruleName": "person-default"
+          },
+          {
+            "dwell": {
+              "h": 0,
+              "m": 1,
+              "s": 0
+            },
+            "id": 2,
+            "objName": "dog",
+            "ruleName": "dog-default"
+          },
+          {
+            "dwell": {
+              "h": 0,
+              "m": 1,
+              "s": 0
+            },
+            "id": 3,
+            "objName": "horse",
+            "ruleName": "horse-default"
+          },
+          {
+            "dwell": {
+              "h": 0,
+              "m": 1,
+              "s": 0
+            },
+            "id": 4,
+            "objName": "car",
+            "ruleName": "car-default"
+          },
+          {
+            "dwell": {
+              "h": 0,
+              "m": 1,
+              "s": 0
+            },
+            "id": 5,
+            "objName": "bicycle",
+            "ruleName": "bicycle-default"
+          }
+        ]
+      },
+      "occupancy": {
+        "alert": {
+          "EMAIL": false,
+          "EMAIL-RECEIVERS": [],
+          "NX": true,
+          "NX-BOOKMARK": false,
+          "NX-PLUGIN": true,
+          "POST": false,
+          "POST-BODY": [],
+          "POST-CONTENT-TYPE": "",
+          "POST-ROOT-ELEMENT": "",
+          "POST-URL": "",
+          "silencePeriodInMinutes": 10
+        },
+        "config_on": true,
+        "number": 1
+      }
+    }
+  },
+  "DETECT": {
+    "config_on": true,
+    "features": {
+      "objects": {
+        "alert": {
+          "EMAIL": false,
+          "EMAIL-RECEIVERS": [],
+          "NX": true,
+          "NX-BOOKMARK": false,
+          "NX-PLUGIN": true,
+          "POST": false,
+          "POST-BODY": [],
+          "POST-CONTENT-TYPE": "",
+          "POST-ROOT-ELEMENT": "",
+          "POST-URL": "",
+          "silencePeriodInMinutes": 10
+        },
+        "config_on": true,
+        "objects": [
+          {
+            "objName": "person"
+          },
+          {
+            "objName": "dog"
+          },
+          {
+            "objName": "horse"
+          },
+          {
+            "objName": "car"
+          },
+          {
+            "objName": "bicycle"
+          }
+        ]
+      }
+    }
+  },
+  "ANPR": {
+    "config_on": true,
+    "features": {
+      "ANPR_DETECT": {
+        "config_on": true,
+        "alert": {
+          "POST": false,
+          "POST-URL": "",
+          "POST-CONTENT-TYPE": "",
+          "POST-BODY": [],
+          "POST-ROOT-ELEMENT": "",
+          "NX-BOOKMARK": false,
+          "NX-PLUGIN": true,
+          "NX": true,
+          "EMAIL": false,
+          "EMAIL-RECEIVERS": [],
+          "silencePeriodInMinutes": 10
+        }
+      },
+      "occupancy": {
+        "config_on": true,
+        "alert": {
+          "POST": false,
+          "POST-URL": "",
+          "POST-CONTENT-TYPE": "",
+          "POST-BODY": [],
+          "POST-ROOT-ELEMENT": "",
+          "NX-BOOKMARK": false,
+          "NX-PLUGIN": true,
+          "NX": true,
+          "EMAIL    // Hey, this is a comment-RECEIVERS": [],
+          "silencePeriodInMinutes": 10
+        },
+        "number": 1
+      },
+      "infringement": {
+        "config_on": true,
+        "alert": {
+          "POST": false,
+          "POST-URL": "",
+          "POST-CONTENT-TYPE": "",
+          "POST-BODY": [],
+          "POST-ROOT-ELEMENT": "",
+          "NX-BOOKMARK": false,
+          "NX-PLUGIN": true,
+          "NX": true,
+          "EMAIL": true,
+          "EMAIL-RECEIVERS": [],
+          "silencePeriodInMinutes": 0
+        },
+        "ruleIds": [],
+        "whiteList": []
+      },
+      "blacklist": {
+        "config_on": true,
+        "alert": {
+          "POST": false,
+          "POST-URL": "",
+          "POST-CONTENT-TYPE": "",
+          "POST-BODY": [],
+          "POST-ROOT-ELEMENT": "",
+          "NX-BOOKMARK": false,
+          "NX-PLUGIN": true,
+          "NX": true,
+          "EMAIL": false,
+          "EMAIL-RECEIVERS": [],
+          "silencePeriodInMinutes": 10
+        },
+        "plates": []
+      }
+
+    }
+  },
+  "REID": {
+    "config_on": true,
+    "features": {
+      "retail": {
+        "alert": {
+          "EMAIL": false,
+          "EMAIL-RECEIVERS": [],
+          "NX": true,
+          "NX-BOOKMARK": false,
+          "NX-PLUGIN": true,
+          "POST": false,
+          "POST-BODY": [],
+          "POST-CONTENT-TYPE": "",
+          "POST-ROOT-ELEMENT": "",
+          "POST-URL": "",
+          "silencePeriodInMinutes": 10
+        },
+        "config_on": true,
+        "type": "reid-journey"
+      }
+    }
+  }
+}
