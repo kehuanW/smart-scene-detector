@@ -30,6 +30,7 @@ from categories.places365_parking_scenes import PARKING_SCENES
 class MonitoringStandard:
     """Structure to hold monitoring standard information"""
     standard_id: int
+    # type: str # "reid", "analytics", "lpr"
     shape: str  # 'polygon' or 'line'
     features: List[str]
     coordinates: List[Tuple[float, float]]  # Normalized coordinates (0-1)
@@ -351,118 +352,76 @@ class MonitoringStandardRecommender:
         detected_objects = [det["object"] for det in yolo_detections]
         
         # Check what we have in the scene
-        people_detected = "person" in detected_objects
-        vehicles_detected = any(obj in detected_objects for obj in ["car", "truck", "bus", "motorcycle"])
+        # people_detected = "person" in detected_objects
+        # vehicles_detected = any(obj in detected_objects for obj in ["car", "truck", "bus", "motorcycle"])
         
         if scene_type == "indoor":
-            # Indoor recommendations following our rules
-            if top_scene in ["pharmacy", "drugstore", "store", "shop"]:
-                if people_detected:
-                    # Rule: Journey for customer tracking at entrance/exit
-                    recommendations.append(MonitoringStandard(
-                        standard_id=1,
-                        shape="line",
-                        features=["reid-journey"],
-                        coordinates=[(0.1, 0.5), (0.9, 0.5)],  # Horizontal line across entrance
-                        confidence=0.85,
-                        reasoning=f"Indoor {top_scene} - track customer journey at entrance/exit"
-                    ))
-                    
-                    # Rule: People occupancy for density monitoring
-                    recommendations.append(MonitoringStandard(
-                        standard_id=2,
-                        shape="polygon",
-                        features=["people-occupancy"],
-                        coordinates=[(0.2, 0.3), (0.8, 0.3), (0.8, 0.7), (0.2, 0.7)],
-                        confidence=0.82,
-                        reasoning=f"Monitor customer density in {top_scene} area"
-                    ))
-            
-            elif top_scene in ["office", "conference_room"]:
-                if people_detected:
-                    # Rule: Staff tracking (mutually exclusive with Journey per R4)
-                    recommendations.append(MonitoringStandard(
-                        standard_id=1,
-                        shape="polygon",
-                        features=["reid-staff"],
-                        coordinates=[(0.1, 0.2), (0.9, 0.2), (0.9, 0.8), (0.1, 0.8)],
-                        confidence=0.88,
-                        reasoning="Office environment - track staff presence and movement"
-                    ))
-            
-            # General indoor object detection (follows R2, R3 - no standardCount with Journey/Staff)
-            if len(detected_objects) > 2 and not any('reid' in rec.features[0] for rec in recommendations):
-                recommendations.append(MonitoringStandard(
-                    standard_id=len(recommendations) + 1,
-                    shape="polygon",
-                    features=["objects"],
-                    coordinates=[(0.15, 0.25), (0.85, 0.25), (0.85, 0.75), (0.15, 0.75)],
-                    confidence=0.75,
-                    reasoning="Multiple objects detected - general object monitoring"
-                ))
+            # Rule: Journey for customer tracking at entrance/exit
+            recommendations.append(MonitoringStandard(
+                standard_id=1,
+                shape="line",
+                features=["reid-journey", "people-occupancy"],
+                coordinates=[(0.1, 0.5), (0.9, 0.5)],  # Horizontal line across entrance
+                confidence=0.85,
+                reasoning=f"Indoor {top_scene} - track journey at entrance/exit"
+            ))
+
+            # Rule: Staff tracking (mutually exclusive with Journey per R4)
+            recommendations.append(MonitoringStandard(
+                standard_id=2,
+                shape="polygon",
+                features=["reid-staff"],
+                coordinates=[(0.1, 0.2), (0.9, 0.2), (0.9, 0.8), (0.1, 0.8)],
+                confidence=0.88,
+                reasoning="Office environment - track staff presence and movement"
+            ))
+                
+            # Rule: People occupancy for density monitoring
+            recommendations.append(MonitoringStandard(
+                standard_id=3,
+                shape="polygon",
+                features=["people-occupancy", "standardCount", "objects", "objectsWithDwell"],
+                coordinates=[(0.2, 0.4), (0.6, 0.4), (0.6, 0.7), (0.2, 0.7)],
+                confidence=0.82,
+                reasoning=f"Monitor customer density in {top_scene} area"
+            ))
         
         else:  # outdoor
             if top_scene in self.car_park_scenes:
                 # Car park specific recommendations (following R1 - LPR features)
-                if vehicles_detected:
-                    # Rule: Infringement detection for parking violations
-                    recommendations.append(MonitoringStandard(
-                        standard_id=1,
-                        shape="polygon",
-                        features=["infringement"],
-                        coordinates=[(0.1, 0.4), (0.9, 0.4), (0.9, 0.75), (0.1, 0.75)],
-                        confidence=0.92,
-                        reasoning="Car park detected - monitor parking violations",
-                        note="Will integrate with parking space detection when model is ready"
-                    ))
-                    
-                    # Rule: LPR occupancy for vehicle tracking
-                    recommendations.append(MonitoringStandard(
-                        standard_id=2,
-                        shape="polygon", 
-                        features=["lpr-occupancy"],
-                        coordinates=[(0.05, 0.35), (0.95, 0.35), (0.95, 0.8), (0.05, 0.8)],
-                        confidence=0.89,
-                        reasoning="Track vehicle occupancy in parking areas"
-                    ))
-            
-            elif top_scene in ["highway", "street"]:
-                if vehicles_detected:
-                    # Rule: LPR detection for traffic monitoring
-                    recommendations.append(MonitoringStandard(
-                        standard_id=1,
-                        shape="polygon",
-                        features=["ANPR_DETECT"],
-                        coordinates=[(0.2, 0.4), (0.8, 0.4), (0.8, 0.7), (0.2, 0.7)],
-                        confidence=0.87,
-                        reasoning="Highway/street scene - license plate recognition"
-                    ))
-                    
-                    # Rule: Standard count for traffic volume (follows R1 - no LPR + non-LPR mix)
-                    # Note: This would violate R1, so we use LPR features only
-                    recommendations.append(MonitoringStandard(
-                        standard_id=2,
-                        shape="line",
-                        features=["ANPR_DETECT"],  # Changed from standardCount to maintain R1
-                        coordinates=[(0.1, 0.6), (0.9, 0.6)],
-                        confidence=0.84,
-                        reasoning="LPR-based vehicle counting for traffic monitoring"
-                    ))
-            
-            # General outdoor recommendations
-            if people_detected:
-                # Rule: People occupancy on line (line-compatible feature)
+                # Rule: Infringement detection for parking violations
                 recommendations.append(MonitoringStandard(
-                    standard_id=len(recommendations) + 1,
-                    shape="line",
-                    features=["people-occupancy"],
-                    coordinates=[(0.1, 0.5), (0.9, 0.5)],
-                    confidence=0.78,
-                    reasoning="People detected in outdoor area - monitor pedestrian flow"
+                    standard_id=1,
+                    shape="polygon",
+                    features=["infringement"],
+                    coordinates=[(0.5, 0.1), (0.7, 0.1), (0.7, 0.3), (0.5, 0.3)],
+                    confidence=0.92,
+                    reasoning="Car park detected - monitor parking violations",
+                    note="Will integrate with parking space detection when model is ready"
                 ))
-        
-        # Validate recommendations against our rules
-        recommendations = self.validate_recommendations(recommendations)
+                
+            # Rule: LPR occupancy for vehicle tracking
+            recommendations.append(MonitoringStandard(
+                standard_id=2,
+                shape="polygon", 
+                features=["lpr-occupancy", "LPR_DETECT", "blacklist"],
+                coordinates=[(0.05, 0.35), (0.95, 0.35), (0.95, 0.8), (0.05, 0.8)],
+                confidence=0.89,
+                reasoning="Track vehicle occupancy in parking areas"
+            ))
+
+            # Rule: count/detect
+            recommendations.append(MonitoringStandard(
+                standard_id=3,
+                shape="polygon",
+                features=["people-occupancy", "standardCount", "objects", "objectsWithDwell"],
+                coordinates=[(0.2, 0.3), (0.8, 0.3), (0.8, 0.7), (0.2, 0.7)],
+                confidence=0.82,
+                reasoning=f"Monitor customer density in {top_scene} area"
+            ))
+            
+        # TODO: Validate recommendations against our rules
+        # recommendations = self.validate_recommendations(recommendations)
         
         return recommendations
 
@@ -603,14 +562,15 @@ class MonitoringStandardRecommender:
                                             facecolor=color, alpha=0.2)
                     ax.add_patch(polygon)
                     
-                    # Add label
-                    center_x = sum([p[0] for p in pixel_coords]) / len(pixel_coords)
-                    center_y = sum([p[1] for p in pixel_coords]) / len(pixel_coords)
+                    # Find left upper corner of polygon
+                    min_x = min([p[0] for p in pixel_coords])
+                    min_y = min([p[1] for p in pixel_coords])
+                    
                     features_text = "+".join(rec["features"])
-                    ax.text(center_x, center_y, f"S{rec['standard_id']}: {features_text}", 
-                           color=color, fontsize=9, weight='bold', 
-                           ha='center', va='center',
-                           bbox=dict(boxstyle="round,pad=0.3", facecolor='white', alpha=0.9))
+                    ax.text(min_x + 5, min_y + 15, f"S{rec['standard_id']}: {features_text}", 
+                        color=color, fontsize=9, weight='bold', 
+                        ha='left', va='top',
+                        bbox=dict(boxstyle="round,pad=0.3", facecolor='white', alpha=0.9))
                 
                 elif rec["shape"] == "line":
                     # Convert normalized coordinates back to pixel coordinates
@@ -619,14 +579,15 @@ class MonitoringStandardRecommender:
                     y_coords = [p[1] for p in pixel_coords]
                     ax.plot(x_coords, y_coords, color=color, linewidth=4, alpha=0.8)
                     
-                    # Add label
-                    mid_x = sum(x_coords) / len(x_coords)
-                    mid_y = sum(y_coords) / len(y_coords)
+                    # Find left upper corner of line
+                    min_x = min(x_coords)
+                    min_y = min(y_coords)
+                    
                     features_text = "+".join(rec["features"])
-                    ax.text(mid_x, mid_y-20, f"S{rec['standard_id']}: {features_text}", 
-                           color=color, fontsize=9, weight='bold', 
-                           ha='center', va='center',
-                           bbox=dict(boxstyle="round,pad=0.3", facecolor='white', alpha=0.9))
+                    ax.text(min_x + 5, min_y - 5, f"S{rec['standard_id']}: {features_text}", 
+                        color=color, fontsize=9, weight='bold', 
+                        ha='left', va='bottom',
+                        bbox=dict(boxstyle="round,pad=0.3", facecolor='white', alpha=0.9))
             
             # Add title with scene information
             title = f"Monitoring Standards: {result.scene_type}"
