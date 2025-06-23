@@ -1,0 +1,36 @@
+OUTDOOR_SCENES = {
+    # Explicit outdoor from Places365
+    'apartment_building/outdoor', 'athletic_field/outdoor', 'bazaar/outdoor', 'cabin/outdoor',
+    'church/outdoor', 'diner/outdoor', 'doorway/outdoor', 'garage/outdoor',
+    'general_store/outdoor', 'greenhouse/outdoor', 'hangar/outdoor', 'hotel/outdoor',
+    'hunting_lodge/outdoor', 'ice_skating_rink/outdoor', 'inn/outdoor', 'kennel/outdoor',
+    'library/outdoor', 'market/outdoor', 'mosque/outdoor', 'museum/outdoor',
+    'parking_garage/outdoor', 'stage/outdoor', 'swimming_pool/outdoor', 'synagogue/outdoor',
+    'volleyball_court/outdoor',
+    
+    # Inherently outdoor scenes
+    'airfield', 'airport_terminal', 'alley', 'amusement_park', 'aqueduct', 'arch',
+    'archaelogical_excavation', 'army_base', 'badlands', 'balcony/exterior', 'baseball_field',
+    'beach', 'beach_house', 'beer_garden', 'boat_deck', 'botanical_garden', 'bridge',
+    'building_facade', 'bullring', 'butte', 'campsite', 'campus', 'canal/natural',
+    'canal/urban', 'canyon', 'castle', 'cemetery', 'cliff', 'coast', 'construction_site',
+    'corn_field', 'corral', 'cottage', 'courtyard', 'creek', 'crevasse', 'crosswalk',
+    'dam', 'desert/sand', 'desert/vegetation', 'desert_road', 'downtown', 'driveway',
+    'excavation', 'farm', 'field/cultivated', 'field/wild', 'field_road', 'fishpond',
+    'football_field', 'forest/broadleaf', 'forest_path', 'forest_road', 'formal_garden',
+    'fountain', 'gas_station', 'gazebo/exterior', 'glacier', 'golf_course', 'grotto',
+    'harbor', 'hayfield', 'heliport', 'highway', 'hot_spring', 'ice_floe', 'ice_shelf',
+    'iceberg', 'igloo', 'industrial_area', 'islet', 'japanese_garden', 'junkyard',
+    'lagoon', 'lake/natural', 'landfill', 'landing_deck', 'lawn', 'marsh', 'moat/water',
+    'mountain', 'mountain_path', 'mountain_snowy', 'ocean', 'oilrig', 'orchard', 'park',
+    'parking_lot', 'pasture', 'patio', 'pavilion', 'picnic_area', 'pier', 'playground',
+    'plaza', 'pond', 'promenade', 'racecourse', 'raceway', 'raft', 'railroad_track',
+    'rainforest', 'residential_neighborhood', 'restaurant_patio', 'rice_paddy', 'river',
+    'rock_arch', 'roof_garden', 'rope_bridge', 'ruin', 'runway', 'sandbox', 'ski_resort',
+    'ski_slope', 'sky', 'skyscraper', 'slum', 'snowfield', 'soccer_field', 'stadium/baseball',
+    'stadium/football', 'stadium/soccer', 'street', 'swamp', 'swimming_hole', 'topiary_garden',
+    'tower', 'tree_farm', 'trench', 'tundra', 'underwater/ocean_deep', 'valley',
+    'vegetable_garden', 'viaduct', 'village', 'vineyard', 'volcano', 'water_park',
+    'water_tower', 'waterfall', 'watering_hole', 'wave', 'wheat_field', 'wind_farm',
+    'windmill', 'yard', 'zen_garden'
+}

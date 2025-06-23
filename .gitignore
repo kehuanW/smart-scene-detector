@@ -1,1 +1,6 @@
 server/venv/*
+server/__pycache__/
+server/results/*
+server/hailort.log
+server/analysis_results.json
+server/analysis_results.png
