@@ -434,45 +434,6 @@ class MonitoringStandardRecommender:
         
         return recommendations
 
-    def validate_recommendations(self, recommendations):
-        """Validate recommendations against business rules R1-R4"""
-        validated = []
-        
-        for rec in recommendations:
-            # Check R1: LPR and non-LPR features are mutually exclusive
-            has_lpr = any(feature in self.lpr_features for feature in rec.features)
-            has_non_lpr = any(feature in self.none_lpr_features for feature in rec.features)
-            
-            if has_lpr and has_non_lpr:
-                print(f"⚠️  Rule R1 violation detected in standard {rec.standard_id}, skipping...")
-                continue
-            
-            # Check R2: Journey and standardCount are mutually exclusive
-            if 'reid-journey' in rec.features and 'standardCount' in rec.features:
-                print(f"⚠️  Rule R2 violation detected in standard {rec.standard_id}, skipping...")
-                continue
-            
-            # Check R3: Staff and standardCount are mutually exclusive  
-            if 'reid-staff' in rec.features and 'standardCount' in rec.features:
-                print(f"⚠️  Rule R3 violation detected in standard {rec.standard_id}, skipping...")
-                continue
-            
-            # Check R4: Journey and Staff are mutually exclusive
-            if 'reid-journey' in rec.features and 'reid-staff' in rec.features:
-                print(f"⚠️  Rule R4 violation detected in standard {rec.standard_id}, skipping...")
-                continue
-            
-            # Check line compatibility
-            if rec.shape == "line":
-                incompatible_features = [f for f in rec.features if f not in self.line_compatible_features]
-                if incompatible_features:
-                    print(f"⚠️  Line incompatible features {incompatible_features} in standard {rec.standard_id}, skipping...")
-                    continue
-            
-            validated.append(rec)
-        
-        return validated
-
     def get_parking_detection_placeholder(self, parking_spaces=None):
         """Get parking detection structure"""
         if parking_spaces:
@@ -747,12 +708,6 @@ def main():
             output_folder=output_folder
         )
         
-        print(f"\n📋 Business Rules Applied:")
-        print(f"✓ R1: LPR and non-LPR features are mutually exclusive")
-        print(f"✓ R2: Journey and standardCount are mutually exclusive")
-        print(f"✓ R3: Staff and standardCount are mutually exclusive")
-        print(f"✓ R4: Journey and Staff are mutually exclusive")
-        print(f"✓ Line constraints: Only Journey, Objects, People-occupancy")
         
     except Exception as e:
         print(f"❌ Error: {e}")
