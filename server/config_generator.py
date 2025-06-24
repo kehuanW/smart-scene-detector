@@ -13,53 +13,14 @@ def generate_features_config(features: List[str]) -> Dict[str, Any]:
             "config_on": False,
             "features": {
                 "standardCount": {
-                    "alert": {
-                        "EMAIL": False,
-                        "EMAIL-RECEIVERS": [],
-                        "NX": True,
-                        "NX-BOOKMARK": False,
-                        "NX-PLUGIN": True,
-                        "POST": False,
-                        "POST-BODY": [],
-                        "POST-CONTENT-TYPE": "",
-                        "POST-ROOT-ELEMENT": "",
-                        "POST-URL": "",
-                        "silencePeriodInMinutes": 0
-                    },
                     "config_on": False,
                     "objects": []
                 },
                 "objectsWithDwell": {
-                    "alert": {
-                        "EMAIL": False,
-                        "EMAIL-RECEIVERS": [],
-                        "NX": True,
-                        "NX-BOOKMARK": False,
-                        "NX-PLUGIN": True,
-                        "POST": False,
-                        "POST-BODY": [],
-                        "POST-CONTENT-TYPE": "",
-                        "POST-ROOT-ELEMENT": "",
-                        "POST-URL": "",
-                        "silencePeriodInMinutes": 0
-                    },
                     "config_on": False,
                     "rules": []
                 },
                 "people-occupancy": {
-                    "alert": {
-                        "EMAIL": False,
-                        "EMAIL-RECEIVERS": [],
-                        "NX": True,
-                        "NX-BOOKMARK": False,
-                        "NX-PLUGIN": True,
-                        "POST": False,
-                        "POST-BODY": [],
-                        "POST-CONTENT-TYPE": "",
-                        "POST-ROOT-ELEMENT": "",
-                        "POST-URL": "",
-                        "silencePeriodInMinutes": 10
-                    },
                     "config_on": False,
                     "number": 1
                 }
@@ -69,19 +30,6 @@ def generate_features_config(features: List[str]) -> Dict[str, Any]:
             "config_on": False,
             "features": {
                 "objects": {
-                    "alert": {
-                        "EMAIL": False,
-                        "EMAIL-RECEIVERS": [],
-                        "NX": True,
-                        "NX-BOOKMARK": False,
-                        "NX-PLUGIN": True,
-                        "POST": False,
-                        "POST-BODY": [],
-                        "POST-CONTENT-TYPE": "",
-                        "POST-ROOT-ELEMENT": "",
-                        "POST-URL": "",
-                        "silencePeriodInMinutes": 10
-                    },
                     "config_on": False,
                     "objects": []
                 }
@@ -91,71 +39,19 @@ def generate_features_config(features: List[str]) -> Dict[str, Any]:
             "config_on": False,
             "features": {
                 "ANPR_DETECT": {
-                    "config_on": False,
-                    "alert": {
-                        "POST": False,
-                        "POST-URL": "",
-                        "POST-CONTENT-TYPE": "",
-                        "POST-BODY": [],
-                        "POST-ROOT-ELEMENT": "",
-                        "NX-BOOKMARK": False,
-                        "NX-PLUGIN": True,
-                        "NX": True,
-                        "EMAIL": False,
-                        "EMAIL-RECEIVERS": [],
-                        "silencePeriodInMinutes": 10
-                    }
+                    "config_on": False
                 },
                 "lpr-occupancy": {
                     "config_on": False,
-                    "alert": {
-                        "POST": False,
-                        "POST-URL": "",
-                        "POST-CONTENT-TYPE": "",
-                        "POST-BODY": [],
-                        "POST-ROOT-ELEMENT": "",
-                        "NX-BOOKMARK": False,
-                        "NX-PLUGIN": True,
-                        "NX": True,
-                        "EMAIL": False,
-                        "EMAIL-RECEIVERS": [],
-                        "silencePeriodInMinutes": 10
-                    },
                     "number": 1
                 },
                 "infringement": {
                     "config_on": False,
-                    "alert": {
-                        "POST": False,
-                        "POST-URL": "",
-                        "POST-CONTENT-TYPE": "",
-                        "POST-BODY": [],
-                        "POST-ROOT-ELEMENT": "",
-                        "NX-BOOKMARK": False,
-                        "NX-PLUGIN": True,
-                        "NX": True,
-                        "EMAIL": True,
-                        "EMAIL-RECEIVERS": [],
-                        "silencePeriodInMinutes": 0
-                    },
                     "ruleIds": [],
                     "whiteList": []
                 },
                 "blacklist": {
                     "config_on": False,
-                    "alert": {
-                        "POST": False,
-                        "POST-URL": "",
-                        "POST-CONTENT-TYPE": "",
-                        "POST-BODY": [],
-                        "POST-ROOT-ELEMENT": "",
-                        "NX-BOOKMARK": False,
-                        "NX-PLUGIN": True,
-                        "NX": True,
-                        "EMAIL": False,
-                        "EMAIL-RECEIVERS": [],
-                        "silencePeriodInMinutes": 10
-                    },
                     "plates": []
                 }
             }
@@ -164,19 +60,6 @@ def generate_features_config(features: List[str]) -> Dict[str, Any]:
             "config_on": False,
             "features": {
                 "retail": {
-                    "alert": {
-                        "EMAIL": False,
-                        "EMAIL-RECEIVERS": [],
-                        "NX": True,
-                        "NX-BOOKMARK": False,
-                        "NX-PLUGIN": True,
-                        "POST": False,
-                        "POST-BODY": [],
-                        "POST-CONTENT-TYPE": "",
-                        "POST-ROOT-ELEMENT": "",
-                        "POST-URL": "",
-                        "silencePeriodInMinutes": 10
-                    },
                     "config_on": False,
                     "type": "reid-journey"  # Default type, will be updated based on recommendation
                 }

@@ -3,19 +3,6 @@
     "config_on": true,
     "features": {
       "standardCount": {
-        "alert": {
-          "EMAIL": false,
-          "EMAIL-RECEIVERS": [],
-          "NX": true,
-          "NX-BOOKMARK": false,
-          "NX-PLUGIN": true,
-          "POST": false,
-          "POST-BODY": [],
-          "POST-CONTENT-TYPE": "",
-          "POST-ROOT-ELEMENT": "",
-          "POST-URL": "",
-          "silencePeriodInMinutes": 0
-        },
         "config_on": true,
         "objects": [
           {
@@ -36,19 +23,6 @@
         ]
       },
       "objectsWithDwell": {
-        "alert": {
-          "EMAIL": false,
-          "EMAIL-RECEIVERS": [],
-          "NX": true,
-          "NX-BOOKMARK": false,
-          "NX-PLUGIN": true,
-          "POST": false,
-          "POST-BODY": [],
-          "POST-CONTENT-TYPE": "",
-          "POST-ROOT-ELEMENT": "",
-          "POST-URL": "",
-          "silencePeriodInMinutes": 0
-        },
         "config_on": true,
         "rules": [
           {
@@ -104,19 +78,6 @@
         ]
       },
       "occupancy": {
-        "alert": {
-          "EMAIL": false,
-          "EMAIL-RECEIVERS": [],
-          "NX": true,
-          "NX-BOOKMARK": false,
-          "NX-PLUGIN": true,
-          "POST": false,
-          "POST-BODY": [],
-          "POST-CONTENT-TYPE": "",
-          "POST-ROOT-ELEMENT": "",
-          "POST-URL": "",
-          "silencePeriodInMinutes": 10
-        },
         "config_on": true,
         "number": 1
       }
@@ -126,19 +87,6 @@
     "config_on": true,
     "features": {
       "objects": {
-        "alert": {
-          "EMAIL": false,
-          "EMAIL-RECEIVERS": [],
-          "NX": true,
-          "NX-BOOKMARK": false,
-          "NX-PLUGIN": true,
-          "POST": false,
-          "POST-BODY": [],
-          "POST-CONTENT-TYPE": "",
-          "POST-ROOT-ELEMENT": "",
-          "POST-URL": "",
-          "silencePeriodInMinutes": 10
-        },
         "config_on": true,
         "objects": [
           {
@@ -164,92 +112,27 @@
     "config_on": true,
     "features": {
       "ANPR_DETECT": {
-        "config_on": true,
-        "alert": {
-          "POST": false,
-          "POST-URL": "",
-          "POST-CONTENT-TYPE": "",
-          "POST-BODY": [],
-          "POST-ROOT-ELEMENT": "",
-          "NX-BOOKMARK": false,
-          "NX-PLUGIN": true,
-          "NX": true,
-          "EMAIL": false,
-          "EMAIL-RECEIVERS": [],
-          "silencePeriodInMinutes": 10
-        }
+        "config_on": true
       },
       "occupancy": {
         "config_on": true,
-        "alert": {
-          "POST": false,
-          "POST-URL": "",
-          "POST-CONTENT-TYPE": "",
-          "POST-BODY": [],
-          "POST-ROOT-ELEMENT": "",
-          "NX-BOOKMARK": false,
-          "NX-PLUGIN": true,
-          "NX": true,
-          "EMAIL    // Hey, this is a comment-RECEIVERS": [],
-          "silencePeriodInMinutes": 10
-        },
         "number": 1
       },
       "infringement": {
         "config_on": true,
-        "alert": {
-          "POST": false,
-          "POST-URL": "",
-          "POST-CONTENT-TYPE": "",
-          "POST-BODY": [],
-          "POST-ROOT-ELEMENT": "",
-          "NX-BOOKMARK": false,
-          "NX-PLUGIN": true,
-          "NX": true,
-          "EMAIL": true,
-          "EMAIL-RECEIVERS": [],
-          "silencePeriodInMinutes": 0
-        },
         "ruleIds": [],
         "whiteList": []
       },
       "blacklist": {
         "config_on": true,
-        "alert": {
-          "POST": false,
-          "POST-URL": "",
-          "POST-CONTENT-TYPE": "",
-          "POST-BODY": [],
-          "POST-ROOT-ELEMENT": "",
-          "NX-BOOKMARK": false,
-          "NX-PLUGIN": true,
-          "NX": true,
-          "EMAIL": false,
-          "EMAIL-RECEIVERS": [],
-          "silencePeriodInMinutes": 10
-        },
         "plates": []
       }
-
     }
   },
   "REID": {
     "config_on": true,
     "features": {
       "retail": {
-        "alert": {
-          "EMAIL": false,
-          "EMAIL-RECEIVERS": [],
-          "NX": true,
-          "NX-BOOKMARK": false,
-          "NX-PLUGIN": true,
-          "POST": false,
-          "POST-BODY": [],
-          "POST-CONTENT-TYPE": "",
-          "POST-ROOT-ELEMENT": "",
-          "POST-URL": "",
-          "silencePeriodInMinutes": 10
-        },
         "config_on": true,
         "type": "reid-journey"
       }
